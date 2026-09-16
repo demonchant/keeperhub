@@ -1,0 +1,11 @@
+{
+  "karmaProjectSlug": "replace-with-real-karma-project",
+  "karmaGrantUID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "karmaMilestoneUID": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "chainId": 10,
+  "tokenAddress": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+  "recipient": "0x0000000000000000000000000000000000000000",
+  "amount": "1.00",
+  "tranche": 1,
+  "evidenceUrl": "https://www.karmahq.xyz/project/replace-with-real-karma-project"
+}

@@ -1,0 +1,16 @@
+node_modules/
+.next/
+coverage/
+dist/
+.env
+.env.local
+.env.*.local
+*.log
+*.tsbuildinfo
+data/*.db
+data/*.db-*
+# Local design reference supplied for this build.
+1.png
+!.env.example
+!.gitkeep
+.DS_Store
