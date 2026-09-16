@@ -84,7 +84,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="wrap"><Logo /><p>Approved on Karma. Executed exactly by KeeperHub.</p><div><a href="https://github.com" rel="noreferrer">GitHub</a><Link href="/docs">Documentation</Link></div></footer>
+      <footer className="wrap"><Logo /><p>Approved on Karma. Executed exactly by KeeperHub.</p><div><a href="https://github.com/demonchant/keeperhub" target="_blank" rel="noreferrer">GitHub</a><Link href="/docs">Documentation</Link></div></footer>
     </main>
   );
 }

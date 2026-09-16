@@ -2,7 +2,8 @@
 
 Replace every placeholder after the verified production run.
 
-- **Source:** `https://github.com/REPLACE/REPLACE/releases/tag/v1.0.0-demo`
+- **Source:** `https://github.com/demonchant/keeperhub`
+- **Release:** `https://github.com/demonchant/keeperhub/releases/tag/v1.0.0-demo`
 - **Demo video:** `REPLACE`
 - **KeeperHub workflow:** `REPLACE`
 - **KeeperHub execution:** `REPLACE`
