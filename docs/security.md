@@ -15,6 +15,7 @@
 - Production configuration refuses to boot without a long administrator token and KeeperHub key.
 - Mutations check the browser origin, apply a pre-authentication rate limit and require a bearer token or signed, HTTP-only operator session.
 - KeeperHub credentials exist only on the server.
+- Anonymous visitors can run the isolated `/demo` walkthrough and inspect public receipts, but production payout mutations remain operator-only.
 - Upstream HTTP calls have abort deadlines and bounded error bodies.
 - CSP, frame denial, MIME sniffing protection and restrictive permissions headers are applied globally.
 - Production CSP excludes `unsafe-eval`; strict transport security and secure cookies assume the deployment is served over HTTPS.

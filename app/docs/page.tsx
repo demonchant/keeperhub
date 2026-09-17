@@ -14,7 +14,7 @@ export default function DocsPage() {
 copy .env.example .env.local
 npm run dev
 # open http://localhost:3000`}</pre>
-      <p>The default configuration starts in demo mode with an approved Karma fixture and deterministic KeeperHub simulation. Click <code>Prepare demo</code>, inspect the manifest and preflight, explicitly freeze the hash, then execute it. In production, the same console exposes a live Karma payout form after operator authentication.</p>
+      <p>The public <code>/demo</code> route provides a credential-free, zero-funds walkthrough for evaluators. The default development configuration also supports a persisted fixture run. In production, the public dashboard exposes receipts while the live Karma payout form appears only after operator authentication.</p>
       <h2 id="architecture">Architecture</h2><pre>{`Karma GAP v2 API
       │ live milestone + approval
       ▼

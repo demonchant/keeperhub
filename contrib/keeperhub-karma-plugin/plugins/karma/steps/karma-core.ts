@@ -1,7 +1,7 @@
 import "server-only";
 import { safeFetch } from "@/lib/safe-fetch";
 
-const API = "https://gapapi.karmahq.xyz/v2";
+const API = "https://gapapi.karmahq.xyz";
 const UID = /^0x[a-fA-F0-9]{64}$/;
 
 export type KarmaResult<T> = { success: true; data: T } | { success: false; error: string };

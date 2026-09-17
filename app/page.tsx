@@ -16,9 +16,9 @@ export default function LandingPage() {
       <nav className="landing-nav wrap">
         <Logo />
         <div className="nav-links">
-          <a href="#how">How it works</a><a href="#security">Security</a><Link href="/docs">Docs</Link><Link href="/dashboard">Demo</Link>
+          <a href="#how">How it works</a><a href="#security">Security</a><Link href="/docs">Docs</Link><Link href="/demo">Demo</Link>
         </div>
-        <Link className="button button-primary nav-cta" href="/dashboard">Open app <ArrowRight size={17} /></Link>
+        <Link className="button button-primary nav-cta" href="/demo">Try it now <ArrowRight size={17} /></Link>
       </nav>
 
       <section className="hero wrap">
@@ -28,7 +28,7 @@ export default function LandingPage() {
           <h1><span>GrantRail</span><br />Karma milestone payouts executed by <em>KeeperHub</em></h1>
           <p className="hero-lede">When a grant milestone is approved on Karma, GrantRail releases the exact pre-approved USDC tranche through KeeperHub—and proves every step.</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/dashboard">Run the demo <ArrowRight size={18} /></Link>
+            <Link className="button button-primary" href="/demo">Run the demo <ArrowRight size={18} /></Link>
             <a className="button button-secondary" href="#how"><Play size={16} fill="currentColor" /> See how it works</a>
           </div>
           <div className="trust-row"><span><Check size={14} /> Open source</span><span><Check size={14} /> Non-custodial</span><span><Check size={14} /> Optimism mainnet ready</span></div>

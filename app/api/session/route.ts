@@ -1,9 +1,17 @@
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { getConfig } from "@/lib/config";
-import { enforceRateLimit, enforceRequestOrigin, errorResponse, issueSession } from "@/lib/security";
+import { enforceRateLimit, enforceRequestOrigin, errorResponse, issueSession, verifySession } from "@/lib/security";
 
 export const runtime = "nodejs";
+
+export async function GET(request: NextRequest) {
+  const config = getConfig();
+  return Response.json({
+    authenticated: config.demo || verifySession(request.cookies.get("grantrail_session")?.value),
+    mode: config.GRANTRAIL_MODE
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {

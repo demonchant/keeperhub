@@ -27,6 +27,7 @@ export function DashboardApp() {
   const [busy, setBusy] = useState<"prepare" | "approve" | "execute" | "refresh" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<AppMode | null>(null);
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
   const [draft, setDraft] = useState(emptyPayout);
 
   const load = useCallback(async (mode: "refresh" | null = null) => {
@@ -46,17 +47,20 @@ export function DashboardApp() {
     const controller = new AbortController();
     Promise.all([
       fetch("/api/payouts", { cache: "no-store", signal: controller.signal }),
-      fetch("/api/health", { cache: "no-store", signal: controller.signal })
+      fetch("/api/health", { cache: "no-store", signal: controller.signal }),
+      fetch("/api/session", { cache: "no-store", signal: controller.signal })
     ])
-      .then(async ([payoutResponse, healthResponse]) => {
+      .then(async ([payoutResponse, healthResponse, sessionResponse]) => {
         const response = payoutResponse;
         const data = await response.json() as { payouts?: PayoutRecord[] } & ApiError;
         if (!response.ok) throw new Error(data.error || "Could not load payouts");
         const health = await healthResponse.json() as { mode?: AppMode } & ApiError;
         if (!healthResponse.ok || !health.mode) throw new Error(health.error || "Could not determine operating mode");
-        return { payouts: data.payouts ?? [], mode: health.mode };
+        const session = await sessionResponse.json() as { authenticated?: boolean } & ApiError;
+        if (!sessionResponse.ok) throw new Error(session.error || "Could not read operator session");
+        return { payouts: data.payouts ?? [], mode: health.mode, authenticated: Boolean(session.authenticated) };
       })
-      .then(({ payouts: next, mode: nextMode }) => { setPayouts(next); setSelected(next[0] ?? null); setMode(nextMode); })
+      .then(({ payouts: next, mode: nextMode, authenticated: nextAuth }) => { setPayouts(next); setSelected(next[0] ?? null); setMode(nextMode); setAuthenticated(nextAuth); })
       .catch((cause: unknown) => {
         if (!(cause instanceof DOMException && cause.name === "AbortError")) setError(cause instanceof Error ? cause.message : "Could not load payouts");
       });
@@ -116,6 +120,7 @@ export function DashboardApp() {
       const response = await fetch("/api/session", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ token }) });
       const data = await response.json() as ApiError;
       if (!response.ok) throw new Error(data.error || "Authentication failed");
+      setAuthenticated(true);
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Authentication failed"); }
   }
 
@@ -141,7 +146,8 @@ export function DashboardApp() {
         <div className="operations-grid">
           <section className="panel payout-list-panel">
             <div className="panel-head"><div><small>QUEUE</small><h2>Payout manifests</h2></div>{mode === "demo" && <button className="button button-primary small" onClick={prepare} disabled={busy !== null}>{busy === "prepare" ? <LoaderCircle className="spin" /> : <Play />} Prepare demo</button>}</div>
-            {mode === "production" && <form className="payout-form" onSubmit={(event) => { event.preventDefault(); void prepare(); }}>
+            {mode === "production" && authenticated === false && <div className="operator-gate"><LockKeyhole /><div><b>Public audit mode</b><span>Anyone can inspect receipts. Only the treasury operator can prepare or broadcast a real payout.</span></div><button className="button button-secondary small" onClick={authenticate}>Operator sign in</button><Link className="button button-primary small" href="/demo">Run safe demo</Link></div>}
+            {mode === "production" && authenticated && <form className="payout-form" onSubmit={(event) => { event.preventDefault(); void prepare(); }}>
               <div className="form-intro"><ShieldCheck /><span><b>Prepare a live payout</b><small>Values are verified against Karma before KeeperHub creates a disabled workflow.</small></span></div>
               <label>Project slug<input required minLength={2} maxLength={120} autoComplete="off" value={draft.karmaProjectSlug} onChange={(event) => setDraft({ ...draft, karmaProjectSlug: event.target.value })} placeholder="project-slug" /></label>
               <label>Grant UID<input required pattern="0x[a-fA-F0-9]{64}" autoComplete="off" value={draft.karmaGrantUID} onChange={(event) => setDraft({ ...draft, karmaGrantUID: event.target.value })} placeholder="0x…" /></label>

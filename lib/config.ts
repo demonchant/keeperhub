@@ -6,7 +6,7 @@ const configSchema = z.object({
   GRANTRAIL_ALLOWED_ORIGIN: z.string().url().default("http://localhost:3000"),
   DATABASE_URL: z.string().default("file:./data/grantrail.db"),
   DATABASE_AUTH_TOKEN: z.string().optional(),
-  KARMA_API_BASE_URL: z.string().url().default("https://gapapi.karmahq.xyz/v2"),
+  KARMA_API_BASE_URL: z.string().url().default("https://gapapi.karmahq.xyz"),
   KARMA_PROJECT_SLUG: z.string().optional(),
   KEEPERHUB_API_BASE_URL: z.string().url().default("https://app.keeperhub.com/api"),
   KEEPERHUB_API_KEY: z.string().min(10).optional(),

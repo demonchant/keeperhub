@@ -26,6 +26,8 @@ npm.cmd run dev
 
 Open `http://localhost:3000`, then select **Run the demo**. The demo persists to `data/grantrail.db`.
 
+The `/demo` route is a public, client-isolated walkthrough that requires no credentials and can never broadcast. The `/dashboard` route remains publicly readable in production, while preparing, freezing and executing real payouts requires an authenticated treasury operator. This separation lets evaluators exercise the product without exposing a shared funded wallet.
+
 ## Production configuration
 
 1. Create a KeeperHub organization and connect its non-custodial wallet.
