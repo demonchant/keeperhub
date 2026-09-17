@@ -1,7 +1,7 @@
 import { createClient, type Client } from "@libsql/client";
 import { randomUUID } from "node:crypto";
 import { getConfig } from "@/lib/config";
-import { canTransition, payoutStatusSchema, type AuditEvent, type PayoutManifest, type PayoutRecord, type PayoutStatus } from "@/lib/domain";
+import { canTransition, payoutManifestSchema, payoutStatusSchema, type AuditEvent, type PayoutManifest, type PayoutRecord, type PayoutStatus } from "@/lib/domain";
 
 let client: Client | undefined;
 let initialized: Promise<void> | undefined;
@@ -56,7 +56,7 @@ function rowToPayout(row: Record<string, unknown>): PayoutRecord {
   return {
     id: String(row.id),
     idempotencyKey: String(row.idempotency_key),
-    manifest: JSON.parse(String(row.manifest_json)) as PayoutManifest,
+    manifest: payoutManifestSchema.parse(JSON.parse(String(row.manifest_json))),
     manifestHash: String(row.manifest_hash),
     status: payoutStatusSchema.parse(row.status),
     workflowId: row.workflow_id ? String(row.workflow_id) : undefined,
@@ -148,6 +148,31 @@ export async function transitionPayout(
     }
   ], "write");
   if (result[0].rowsAffected !== 1) throw new Error("Concurrent payout update detected; reload before retrying");
+  return (await getPayout(id))!;
+}
+
+export async function attachWorkflow(id: string, workflowId: string): Promise<PayoutRecord> {
+  const current = await getPayout(id);
+  if (!current) throw new Error("Payout not found");
+  if (current.workflowId) {
+    if (current.workflowId !== workflowId) throw new Error("A different KeeperHub workflow is already attached");
+    return current;
+  }
+  if (current.status !== "VALIDATED") throw new Error(`Cannot attach a workflow from ${current.status}`);
+
+  const now = new Date().toISOString();
+  const result = await getClient().batch([
+    {
+      sql: "UPDATE payouts SET workflow_id = ?, updated_at = ? WHERE id = ? AND status = 'VALIDATED' AND workflow_id IS NULL",
+      args: [workflowId, now, id]
+    },
+    {
+      sql: `INSERT INTO audit_events (payout_id, from_status, to_status, event, detail_json, created_at)
+            VALUES (?, 'VALIDATED', 'VALIDATED', 'keeperhub_workflow_attached', ?, ?)`,
+      args: [id, JSON.stringify({ workflowId }), now]
+    }
+  ], "write");
+  if (result[0].rowsAffected !== 1) throw new Error("Concurrent KeeperHub workflow attachment detected");
   return (await getPayout(id))!;
 }
 

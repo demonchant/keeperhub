@@ -12,13 +12,8 @@ type AppMode = "demo" | "production";
 
 const OPTIMISM_USDC = "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85";
 const emptyPayout = {
-  karmaProjectSlug: "",
-  karmaGrantUID: "",
-  karmaMilestoneUID: "",
-  recipient: "",
+  karmaProjectSlug: "karma",
   amount: "1.00",
-  tranche: "1",
-  evidenceUrl: ""
 };
 
 export function DashboardApp() {
@@ -71,10 +66,10 @@ export function DashboardApp() {
     setBusy("prepare"); setError(null);
     try {
       const body = mode === "production" ? {
+        kind: "project_support",
         ...draft,
         chainId: 10,
-        tokenAddress: OPTIMISM_USDC,
-        tranche: Number(draft.tranche)
+        tokenAddress: OPTIMISM_USDC
       } : {};
       const response = await fetch("/api/payouts/prepare", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
       const data = await response.json() as { payout?: PayoutRecord } & ApiError;
@@ -134,7 +129,7 @@ export function DashboardApp() {
         <Link className="back-link" href="/"><ArrowLeft /> Back to site</Link>
       </aside>
       <section className="workspace">
-        <header className="workspace-header"><div><p>OPERATIONS CONSOLE</p><h1>Milestone payouts</h1></div><div className="header-actions"><button className="icon-button" onClick={authenticate} aria-label="Authenticate operator" title="Authenticate operator"><KeyRound /></button><button className="icon-button" onClick={() => void load("refresh")} aria-label="Refresh"><RefreshCw className={busy === "refresh" ? "spin" : ""} /></button><span className="mode-chip"><i /> {mode ? `${mode.toUpperCase()} · POLICY ACTIVE` : "LOADING POLICY"}</span></div></header>
+        <header className="workspace-header"><div><p>KEEPERHUB × KARMA</p><h1>Deterministic project support</h1></div><div className="header-actions"><button className="icon-button" onClick={authenticate} aria-label="Authenticate operator" title="Authenticate operator"><KeyRound /></button><button className="icon-button" onClick={() => void load("refresh")} aria-label="Refresh"><RefreshCw className={busy === "refresh" ? "spin" : ""} /></button><span className="mode-chip"><i /> {mode ? `${mode.toUpperCase()} · POLICY ACTIVE` : "LOADING POLICY"}</span></div></header>
         {error && <div className="error-banner"><ShieldCheck />{error}<button onClick={() => setError(null)}>×</button></div>}
         <div className="metrics">
           <article><small>TOTAL PAYOUTS</small><strong>{payouts.length.toString().padStart(2, "0")}</strong><span>All time</span></article>
@@ -146,21 +141,16 @@ export function DashboardApp() {
         <div className="operations-grid">
           <section className="panel payout-list-panel">
             <div className="panel-head"><div><small>QUEUE</small><h2>Payout manifests</h2></div>{mode === "demo" && <button className="button button-primary small" onClick={prepare} disabled={busy !== null}>{busy === "prepare" ? <LoaderCircle className="spin" /> : <Play />} Prepare demo</button>}</div>
-            {mode === "production" && authenticated === false && <div className="operator-gate"><LockKeyhole /><div><b>Public audit mode</b><span>Anyone can inspect receipts. Only the treasury operator can prepare or broadcast a real payout.</span></div><button className="button button-secondary small" onClick={authenticate}>Operator sign in</button><Link className="button button-primary small" href="/demo">Run safe demo</Link></div>}
-            {mode === "production" && authenticated && <form className="payout-form" onSubmit={(event) => { event.preventDefault(); void prepare(); }}>
-              <div className="form-intro"><ShieldCheck /><span><b>Prepare a live payout</b><small>Values are verified against Karma before KeeperHub creates a disabled workflow.</small></span></div>
-              <label>Project slug<input required minLength={2} maxLength={120} autoComplete="off" value={draft.karmaProjectSlug} onChange={(event) => setDraft({ ...draft, karmaProjectSlug: event.target.value })} placeholder="project-slug" /></label>
-              <label>Grant UID<input required pattern="0x[a-fA-F0-9]{64}" autoComplete="off" value={draft.karmaGrantUID} onChange={(event) => setDraft({ ...draft, karmaGrantUID: event.target.value })} placeholder="0x…" /></label>
-              <label>Milestone UID<input required pattern="0x[a-fA-F0-9]{64}" autoComplete="off" value={draft.karmaMilestoneUID} onChange={(event) => setDraft({ ...draft, karmaMilestoneUID: event.target.value })} placeholder="0x…" /></label>
-              <label>Approved recipient<input required pattern="0x[a-fA-F0-9]{40}" autoComplete="off" value={draft.recipient} onChange={(event) => setDraft({ ...draft, recipient: event.target.value })} placeholder="0x…" /></label>
+            {mode === "production" && authenticated === false && <div className="operator-gate"><ShieldCheck /><div><b>Public composition is open</b><span>No token needed: resolve a recipient from live Karma data and dry-run it through KeeperHub. Only freeze and broadcast require treasury authority.</span></div><button className="button button-secondary small" onClick={authenticate}>Operator sign in</button><Link className="button button-primary small" href="/demo">Guided demo</Link></div>}
+            {mode === "production" && <form className="payout-form" onSubmit={(event) => { event.preventDefault(); void prepare(); }}>
+              <div className="form-intro"><ShieldCheck /><span><b>Compose from live Karma data</b><small>The server resolves the project UID and chain-specific recipient. The browser cannot supply or override the destination.</small></span></div>
+              <label>Project slug<input required minLength={2} maxLength={120} autoComplete="off" value={draft.karmaProjectSlug} onChange={(event) => setDraft({ ...draft, karmaProjectSlug: event.target.value })} placeholder="karma" /></label>
               <label>USDC amount<input required inputMode="decimal" pattern="\d+(\.\d{1,6})?" value={draft.amount} onChange={(event) => setDraft({ ...draft, amount: event.target.value })} /></label>
-              <label>Tranche<input required type="number" min="1" step="1" value={draft.tranche} onChange={(event) => setDraft({ ...draft, tranche: event.target.value })} /></label>
-              <label className="form-wide">Karma evidence URL<input required type="url" autoComplete="url" value={draft.evidenceUrl} onChange={(event) => setDraft({ ...draft, evidenceUrl: event.target.value })} placeholder="https://gap.karmahq.xyz/project/…" /></label>
-              <div className="form-policy"><span>Optimism</span><code>{short(OPTIMISM_USDC, 10)}</code><button className="button button-primary small" type="submit" disabled={busy !== null}>{busy === "prepare" ? <LoaderCircle className="spin" /> : <Play />} Validate &amp; simulate</button></div>
+              <div className="form-policy"><span>Optimism · public cap 1 USDC</span><code>{short(OPTIMISM_USDC, 10)}</code><button className="button button-primary small" type="submit" disabled={busy !== null}>{busy === "prepare" ? <LoaderCircle className="spin" /> : <Play />} Resolve &amp; simulate</button></div>
             </form>}
             <div className="payout-list">
               {payouts.length === 0 && mode !== "production" && <div className="empty-state"><LockKeyhole /><h3>No manifest yet</h3><p>Prepare the signed-off demo payout to run the full deterministic path.</p></div>}
-              {payouts.map((payout) => <button key={payout.id} className={selected?.id === payout.id ? "payout-row selected" : "payout-row"} onClick={() => setSelected(payout)}><div className="project-avatar">OC</div><div><b>{payout.manifest.karmaProjectSlug.replaceAll("-", " ")}</b><code>{short(payout.manifest.karmaMilestoneUID)}</code></div><strong>{payout.manifest.amount} <small>USDC</small></strong><StatusPill status={payout.status} /></button>)}
+              {payouts.map((payout) => <button key={payout.id} className={selected?.id === payout.id ? "payout-row selected" : "payout-row"} onClick={() => setSelected(payout)}><div className="project-avatar">KH</div><div><b>{payout.manifest.karmaProjectSlug.replaceAll("-", " ")}</b><code>{short(payout.manifest.kind === "project_support" ? payout.manifest.karmaProjectUID : payout.manifest.karmaMilestoneUID)}</code></div><strong>{payout.manifest.amount} <small>USDC</small></strong><StatusPill status={payout.status} /></button>)}
             </div>
           </section>
 
@@ -168,16 +158,26 @@ export function DashboardApp() {
             <div className="panel-head"><div><small>SELECTED PAYOUT</small><h2>Frozen instruction</h2></div>{selected && <StatusPill status={selected.status} />}</div>
             {!selected ? <div className="empty-state"><Gauge /><h3>Nothing selected</h3><p>Prepare or select a payout manifest.</p></div> : <>
               <div className="detail-fields">
-                <label>Karma grant UID <code>{short(m!.karmaGrantUID, 10)}</code></label>
-                <label>Milestone UID <code>{short(m!.karmaMilestoneUID, 10)}</code></label>
-                <label>Approval attestation <code>{short(m!.approvalAttestationUID, 10)}</code></label>
+                {m!.kind === "project_support" ? <>
+                  <label>Intent <code>PROJECT SUPPORT</code></label>
+                  <label>Karma project UID <code>{short(m!.karmaProjectUID, 10)}</code></label>
+                  <label>Required state <code>DONATIONS ENABLED</code></label>
+                </> : <>
+                  <label>Karma grant UID <code>{short(m!.karmaGrantUID, 10)}</code></label>
+                  <label>Milestone UID <code>{short(m!.karmaMilestoneUID, 10)}</code></label>
+                  <label>Approval attestation <code>{short(m!.approvalAttestationUID, 10)}</code></label>
+                </>}
                 <label>Recipient <code>{short(m!.recipient, 10)}</code></label>
+                <label>KeeperHub workflow <code>{selected.workflowId ?? "Not created"}</code></label>
+                {selected.executionId && <label>Execution ID <code>{selected.executionId}</code></label>}
               </div>
               <div className="money-block"><div><small>EXACT AMOUNT</small><strong>{m!.amount} <span>USDC</span></strong></div><div><small>NETWORK</small><strong>Optimism <span>#{m!.chainId}</span></strong></div></div>
               <div className="manifest-hash"><LockKeyhole /><div><small>CANONICAL MANIFEST HASH</small><code>{selected.manifestHash}</code></div></div>
               <div className="detail-actions">
                 <a className="button button-secondary small" href={m!.evidenceUrl} target="_blank" rel="noreferrer">Karma evidence <ExternalLink /></a>
-                {selected.status === "SIMULATED" && <button className="button button-primary small" disabled={busy !== null} onClick={approve}>{busy === "approve" ? <LoaderCircle className="spin" /> : <LockKeyhole />} Review &amp; freeze</button>}
+                <a className="button button-secondary small" href={`/api/payouts/${selected.id}/receipt`} target="_blank" rel="noreferrer">Audit JSON <ExternalLink /></a>
+                {selected.status === "SIMULATED" && authenticated && <button className="button button-primary small" disabled={busy !== null} onClick={approve}>{busy === "approve" ? <LoaderCircle className="spin" /> : <LockKeyhole />} Review &amp; freeze</button>}
+                {selected.status === "SIMULATED" && authenticated === false && <button className="button button-secondary small" onClick={authenticate}><LockKeyhole /> Operator required to freeze</button>}
                 {selected.status === "FROZEN" && <button className="button button-primary small" disabled={busy !== null} onClick={execute}>{busy === "execute" ? <LoaderCircle className="spin" /> : <BoltIcon />} Execute exact workflow</button>}
                 {selected.status === "VERIFIED" && <Link className="button button-primary small" href={`/receipt/${selected.id}`}>Open receipt <ArrowRight /></Link>}
               </div>

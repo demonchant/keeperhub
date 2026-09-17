@@ -14,6 +14,7 @@ const configSchema = z.object({
   ALLOWED_CHAIN_IDS: z.string().default("10"),
   ALLOWED_TOKEN_ADDRESSES: z.string().default("0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85"),
   MAX_PAYOUT_USDC: z.coerce.number().positive().max(100000).default(10),
+  PUBLIC_MAX_SUPPORT_USDC: z.coerce.number().positive().max(100).default(1),
   CONFIRMATION_TIMEOUT_MS: z.coerce.number().int().min(5000).max(600000).default(180000)
 });
 

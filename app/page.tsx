@@ -3,9 +3,9 @@ import { ArrowRight, Bolt, Check, Eye, FileCheck2, Gauge, GitBranch, Link2, Play
 import { Logo } from "@/components/logo";
 
 const timeline = [
-  ["Milestone approved", "Karma GAP"],
-  ["Manifest verified", "Policy engine"],
-  ["Workflow frozen", "KeeperHub"],
+  ["Recipient resolved", "Karma API"],
+  ["Workflow simulated", "KeeperHub"],
+  ["Manifest frozen", "GrantRail"],
   ["USDC transferred", "Optimism"],
   ["Receipt confirmed", "GrantRail"]
 ] as const;
@@ -18,17 +18,17 @@ export default function LandingPage() {
         <div className="nav-links">
           <a href="#how">How it works</a><a href="#security">Security</a><Link href="/docs">Docs</Link><Link href="/demo">Demo</Link>
         </div>
-        <Link className="button button-primary nav-cta" href="/demo">Try it now <ArrowRight size={17} /></Link>
+        <Link className="button button-primary nav-cta" href="/dashboard">Try it now <ArrowRight size={17} /></Link>
       </nav>
 
       <section className="hero wrap">
         <div className="hero-glow" />
         <div className="hero-copy">
-          <p className="eyebrow">FROM APPROVAL TO PAYMENT — ONCHAIN</p>
-          <h1><span>GrantRail</span><br />Karma milestone payouts executed by <em>KeeperHub</em></h1>
-          <p className="hero-lede">When a grant milestone is approved on Karma, GrantRail releases the exact pre-approved USDC tranche through KeeperHub—and proves every step.</p>
+          <p className="eyebrow">FROM INTENT TO VALUE — ONCHAIN</p>
+          <h1><span>GrantRail</span><br />Karma project support executed by <em>KeeperHub</em></h1>
+          <p className="hero-lede">Choose a live Karma project. GrantRail resolves its published donation address, KeeperHub dry-runs the exact USDC workflow, and an authorized treasury can execute it without reinterpretation.</p>
           <div className="hero-actions">
-            <Link className="button button-primary" href="/demo">Run the demo <ArrowRight size={18} /></Link>
+            <Link className="button button-primary" href="/dashboard">Compose a live workflow <ArrowRight size={18} /></Link>
             <a className="button button-secondary" href="#how"><Play size={16} fill="currentColor" /> See how it works</a>
           </div>
           <div className="trust-row"><span><Check size={14} /> Open source</span><span><Check size={14} /> Non-custodial</span><span><Check size={14} /> Optimism mainnet ready</span></div>
@@ -39,12 +39,12 @@ export default function LandingPage() {
           <div className="console-body">
             <aside><b>Overview</b><span>Grants</span><span>Milestones</span><span>Payouts</span><span>Receipts</span></aside>
             <div className="console-content">
-              <div className="console-heading"><div><small>LIVE PAYOUT</small><h3>Climate Action Fund</h3></div><span className="live-pill">Approved</span></div>
+              <div className="console-heading"><div><small>LIVE PROJECT SUPPORT</small><h3>Karma</h3></div><span className="live-pill">Donations enabled</span></div>
               <div className="console-grid">
                 <div className="grant-card">
-                  <label>Karma grant UID</label><code>0x7a3...9f2e</code>
-                  <label>Milestone</label><strong>Audited registry</strong>
-                  <label>Recipient</label><code>0x6f3...2a7c</code>
+                  <label>Karma project UID</label><code>0x86c6...323c</code>
+                  <label>Intent</label><strong>Support live project</strong>
+                  <label>Recipient</label><code>0xC987...A09B</code>
                   <div className="amount-row"><div><label>Amount</label><strong>1.00 USDC</strong></div><div><label>Chain</label><strong>Optimism</strong></div></div>
                 </div>
                 <div className="timeline-card">
@@ -59,7 +59,7 @@ export default function LandingPage() {
       </section>
 
       <section className="proof-strip wrap">
-        <article><Link2 /><div><b>Real Karma integration</b><span>Live grants, milestones and approvals</span></div></article>
+        <article><Link2 /><div><b>Real Karma integration</b><span>Live projects and chain-specific recipients</span></div></article>
         <article><ShieldCheck /><div><b>Frozen by design</b><span>No interpretation during execution</span></div></article>
         <article><Bolt /><div><b>KeeperHub execution</b><span>Reliable USDC payouts on Optimism</span></div></article>
         <article><Eye /><div><b>One public receipt</b><span>Evidence through transaction</span></div></article>
@@ -69,7 +69,7 @@ export default function LandingPage() {
         <div className="section-kicker">THE DETERMINISTIC BOUNDARY</div>
         <div className="section-title-row"><h2>Let the agent reason.<br /><span>Never let it improvise with funds.</span></h2><p>The agent composes once. A human reviews once. KeeperHub executes exactly what was approved.</p></div>
         <div className="steps-grid">
-          <article><span>01</span><GitBranch /><h3>Connect a real grant</h3><p>GrantRail reads the Karma grant, milestone, approval attestation and canonical payout address.</p></article>
+          <article><span>01</span><GitBranch /><h3>Select a live project</h3><p>GrantRail reads Karma’s public project UID and its owner-configured Optimism donation address. The caller cannot override the recipient.</p></article>
           <article><span>02</span><FileCheck2 /><h3>Review and freeze</h3><p>The complete payout manifest is validated, simulated and sealed with a canonical SHA-256 hash.</p></article>
           <article><span>03</span><Gauge /><h3>Execute and prove</h3><p>KeeperHub moves USDC and GrantRail joins every execution artifact into a public receipt.</p></article>
         </div>
@@ -79,12 +79,12 @@ export default function LandingPage() {
         <div className="wrap security-grid">
           <div><p className="eyebrow">FAIL CLOSED. ALWAYS.</p><h2>Safety is the product,<br />not a disclaimer.</h2><p>Every payout crosses explicit checks before KeeperHub receives an execution request.</p><Link className="text-link" href="/docs">Read the security model <ArrowRight size={16} /></Link></div>
           <div className="security-list">
-            {["Approval is live and not revoked", "Recipient matches the Karma grant", "Chain and token are allowlisted", "Manifest hash is unchanged", "Tranche has never been paid", "Ambiguous writes are never rebroadcast"].map((item) => <div key={item}><ShieldCheck size={20} /><span>{item}</span><small>ENFORCED</small></div>)}
+            {["Donations are enabled on Optimism", "Recipient comes directly from Karma", "Chain and token are allowlisted", "Manifest hash is unchanged", "Duplicate intent is idempotent", "Ambiguous writes are never rebroadcast"].map((item) => <div key={item}><ShieldCheck size={20} /><span>{item}</span><small>ENFORCED</small></div>)}
           </div>
         </div>
       </section>
 
-      <footer className="wrap"><Logo /><p>Approved on Karma. Executed exactly by KeeperHub.</p><div><a href="https://github.com/demonchant/keeperhub" target="_blank" rel="noreferrer">GitHub</a><Link href="/docs">Documentation</Link></div></footer>
+      <footer className="wrap"><Logo /><p>Resolved from Karma. Executed exactly by KeeperHub.</p><div><a href="https://github.com/demonchant/keeperhub" target="_blank" rel="noreferrer">GitHub</a><Link href="/docs">Documentation</Link></div></footer>
     </main>
   );
 }

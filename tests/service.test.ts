@@ -6,6 +6,7 @@ import { PayoutService } from "@/lib/service";
 function inputFor(tranche: number) {
   const m = demoManifest();
   return {
+    kind: "milestone_payout" as const,
     karmaProjectSlug: m.karmaProjectSlug,
     karmaGrantUID: m.karmaGrantUID,
     karmaMilestoneUID: m.karmaMilestoneUID,

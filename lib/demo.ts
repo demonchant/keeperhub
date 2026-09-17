@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { KarmaMilestone, KeeperHubExecution, PayoutManifest } from "@/lib/domain";
+import type { KarmaMilestone, KeeperHubExecution, MilestonePayoutManifest } from "@/lib/domain";
 
 const uid = (tail: string) => `0x${tail.padStart(64, "0")}`;
 
@@ -31,8 +31,9 @@ export function demoMilestone(): KarmaMilestone {
   };
 }
 
-export function demoManifest(): PayoutManifest {
+export function demoManifest(): MilestonePayoutManifest {
   return {
+    kind: "milestone_payout",
     version: 1,
     karmaProjectSlug: DEMO_PROJECT.slug,
     karmaGrantUID: DEMO_PROJECT.grantUID,

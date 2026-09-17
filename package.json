@@ -2,7 +2,7 @@
   "name": "grantrail",
   "version": "1.0.0",
   "private": true,
-  "description": "Karma milestone payouts executed deterministically through KeeperHub.",
+  "description": "Deterministic Karma project support and milestone payouts executed through KeeperHub.",
   "engines": {
     "node": ">=20.11"
   },

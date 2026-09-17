@@ -29,9 +29,14 @@ function parseExecution(payload: KeeperHubEnvelope, fallbackWorkflowId: string):
 }
 
 export function keeperHubWorkflowDefinition(manifest: PayoutManifest) {
+  const projectSupport = manifest.kind === "project_support";
   return {
-    name: `GrantRail · ${manifest.karmaProjectSlug} · tranche ${manifest.tranche}`,
-    description: `Frozen payout for Karma milestone ${manifest.karmaMilestoneUID}. Manifest evidence: ${manifest.evidenceUrl}`,
+    name: projectSupport
+      ? `GrantRail · support · ${manifest.karmaProjectSlug}`
+      : `GrantRail · ${manifest.karmaProjectSlug} · tranche ${manifest.tranche}`,
+    description: projectSupport
+      ? `Frozen project-support transfer to the chain-specific recipient published by Karma project ${manifest.karmaProjectUID}. Evidence: ${manifest.evidenceUrl}`
+      : `Frozen payout for Karma milestone ${manifest.karmaMilestoneUID}. Manifest evidence: ${manifest.evidenceUrl}`,
     enabled: false,
     nodes: [
       {
@@ -48,7 +53,10 @@ export function keeperHubWorkflowDefinition(manifest: PayoutManifest) {
             actionType: "web3/transfer-token",
             network: String(manifest.chainId),
             recipientAddress: manifest.recipient,
-            tokenConfig: { address: manifest.tokenAddress, symbol: manifest.tokenSymbol, decimals: manifest.tokenDecimals },
+            tokenConfig: JSON.stringify({
+              mode: "custom",
+              customToken: { address: manifest.tokenAddress, symbol: manifest.tokenSymbol }
+            }),
             amount: manifest.amount
           }
         }

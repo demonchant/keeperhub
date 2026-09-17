@@ -1,5 +1,5 @@
 import { hashManifest, idempotencyKey } from "@/lib/canonical";
-import { createPayout, getAuditEvents, getPayout, transitionPayout } from "@/lib/db";
+import { attachWorkflow, createPayout, getAuditEvents, getPayout, transitionPayout } from "@/lib/db";
 import { payoutManifestSchema, type PayoutRecord, type PreparePayoutInput } from "@/lib/domain";
 import { KarmaClient } from "@/lib/karma";
 import { KeeperHubClient } from "@/lib/keeperhub";
@@ -12,6 +12,8 @@ export class PayoutService {
   ) {}
 
   async prepare(input: PreparePayoutInput): Promise<PayoutRecord> {
+    if (input.kind === "project_support") return this.prepareProjectSupport(input);
+
     const milestone = await this.karma.getMilestone(input.karmaProjectSlug, input.karmaGrantUID, input.karmaMilestoneUID);
     if (milestone.uid.toLowerCase() !== input.karmaMilestoneUID.toLowerCase() || milestone.grantUID.toLowerCase() !== input.karmaGrantUID.toLowerCase() || milestone.projectSlug !== input.karmaProjectSlug) {
       throw new Error("Karma returned evidence that does not match the requested project, grant and milestone");
@@ -25,6 +27,7 @@ export class PayoutService {
 
     const manifest = assertPolicy(payoutManifestSchema.parse({
       ...input,
+      kind: "milestone_payout",
       version: 1,
       approvalAttestationUID: milestone.approvalAttestationUID,
       requiredStatus: "approved",
@@ -35,10 +38,47 @@ export class PayoutService {
     }));
     const key = idempotencyKey(manifest);
     const result = await createPayout({ idempotencyKey: key, manifest, manifestHash: hashManifest(manifest), demo: process.env.GRANTRAIL_MODE !== "production" });
-    if (!result.created) return result.record;
+    if (!result.created) return this.ensureSimulated(result.record);
 
     const record = await transitionPayout(result.record.id, "VALIDATED", "policy_validated", {}, { karmaStatus: milestone.status });
-    const workflowId = await this.keeperHub.createWorkflow(manifest, key);
+    return this.ensureSimulated(record);
+  }
+
+  private async prepareProjectSupport(input: Extract<PreparePayoutInput, { kind: "project_support" }>): Promise<PayoutRecord> {
+    const project = await this.karma.getProjectSupport(input.karmaProjectSlug, input.chainId);
+    const manifest = assertPolicy(payoutManifestSchema.parse({
+      ...input,
+      version: 1,
+      karmaProjectUID: project.uid,
+      requiredStatus: "donations_enabled",
+      tokenSymbol: "USDC",
+      tokenDecimals: 6,
+      recipient: project.recipient,
+      evidenceUrl: project.evidenceUrl,
+      createdAt: new Date().toISOString()
+    }));
+    if (manifest.kind !== "project_support") throw new Error("Invalid project support manifest");
+
+    const key = idempotencyKey(manifest);
+    const result = await createPayout({ idempotencyKey: key, manifest, manifestHash: hashManifest(manifest), demo: process.env.GRANTRAIL_MODE !== "production" });
+    if (!result.created) return this.ensureSimulated(result.record);
+
+    const record = await transitionPayout(result.record.id, "VALIDATED", "karma_donation_recipient_validated", {}, {
+      karmaProjectUID: project.uid,
+      karmaProjectSlug: project.slug,
+      chainId: project.chainId,
+      recipient: project.recipient
+    });
+    return this.ensureSimulated(record);
+  }
+
+  private async ensureSimulated(record: PayoutRecord): Promise<PayoutRecord> {
+    if (record.status !== "VALIDATED") return record;
+    let workflowId = record.workflowId;
+    if (!workflowId) {
+      workflowId = await this.keeperHub.createWorkflow(record.manifest, record.idempotencyKey);
+      record = await attachWorkflow(record.id, workflowId);
+    }
     const simulation = await this.keeperHub.simulateWorkflow(workflowId);
     return transitionPayout(record.id, "SIMULATED", "workflow_simulated", { workflowId }, { workflowId, simulation });
   }
@@ -53,7 +93,9 @@ export class PayoutService {
     }
     record = await transitionPayout(id, "APPROVED", "operator_approved", {}, {
       manifestHash: record.manifestHash,
-      approvalAttestationUID: record.manifest.approvalAttestationUID
+      evidenceAnchor: record.manifest.kind === "milestone_payout"
+        ? record.manifest.approvalAttestationUID
+        : record.manifest.karmaProjectUID
     });
     return transitionPayout(record.id, "FROZEN", "manifest_frozen", {}, { manifestHash: record.manifestHash });
   }
@@ -67,14 +109,24 @@ export class PayoutService {
       return transitionPayout(id, "BLOCKED", "manifest_integrity_failed", { failureReason: "Manifest hash mismatch" });
     }
 
-    const currentMilestone = await this.karma.verifyApproved({
-      projectSlug: record.manifest.karmaProjectSlug,
-      grantUID: record.manifest.karmaGrantUID,
-      uid: record.manifest.karmaMilestoneUID,
-      recipient: record.manifest.recipient
-    });
-    if (currentMilestone.approvalAttestationUID?.toLowerCase() !== record.manifest.approvalAttestationUID.toLowerCase()) {
-      return transitionPayout(id, "BLOCKED", "approval_changed", { failureReason: "Approval attestation changed after freeze" });
+    if (record.manifest.kind === "project_support") {
+      const currentProject = await this.karma.getProjectSupport(record.manifest.karmaProjectSlug, record.manifest.chainId);
+      if (currentProject.uid.toLowerCase() !== record.manifest.karmaProjectUID.toLowerCase()) {
+        return transitionPayout(id, "BLOCKED", "karma_project_changed", { failureReason: "Karma project identity changed after freeze" });
+      }
+      if (currentProject.recipient.toLowerCase() !== record.manifest.recipient.toLowerCase()) {
+        return transitionPayout(id, "BLOCKED", "donation_recipient_changed", { failureReason: "Karma donation recipient changed after freeze" });
+      }
+    } else {
+      const currentMilestone = await this.karma.verifyApproved({
+        projectSlug: record.manifest.karmaProjectSlug,
+        grantUID: record.manifest.karmaGrantUID,
+        uid: record.manifest.karmaMilestoneUID,
+        recipient: record.manifest.recipient
+      });
+      if (currentMilestone.approvalAttestationUID?.toLowerCase() !== record.manifest.approvalAttestationUID.toLowerCase()) {
+        return transitionPayout(id, "BLOCKED", "approval_changed", { failureReason: "Approval attestation changed after freeze" });
+      }
     }
 
     record = await transitionPayout(id, "EXECUTING", "keeperhub_execution_started");

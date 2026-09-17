@@ -16,11 +16,11 @@ export default async function ReceiptPage({ params }: { params: Promise<{ id: st
     {payout.demo && <div className="demo-ribbon">DEMO RECORD — NOT ONCHAIN SUBMISSION EVIDENCE</div>}
     <section className="receipt-hero"><div><p>GRANTRAIL EXECUTION RECEIPT</p><h1>Approval to payment,<br />fully accounted for.</h1></div><StatusPill status={payout.status} /></section>
     <section className="receipt-card">
-      <div className="receipt-summary"><div><small>AMOUNT</small><strong>{payout.manifest.amount} USDC</strong></div><div><small>NETWORK</small><strong>Optimism</strong></div><div><small>TRANCHE</small><strong>#{payout.manifest.tranche}</strong></div><div><small>EXECUTION</small><strong>{payout.executionId ?? "Not submitted"}</strong></div></div>
+      <div className="receipt-summary"><div><small>AMOUNT</small><strong>{payout.manifest.amount} USDC</strong></div><div><small>NETWORK</small><strong>Optimism</strong></div><div><small>INTENT</small><strong>{payout.manifest.kind === "project_support" ? "PROJECT SUPPORT" : `TRANCHE #${payout.manifest.tranche}`}</strong></div><div><small>EXECUTION</small><strong>{payout.executionId ?? "Not submitted"}</strong></div></div>
       <div className="receipt-chain">{events.map((event) => <div key={event.id} className="receipt-event"><i><Check /></i><div><b>{event.event.replaceAll("_", " ")}</b><span>{event.toStatus}</span></div><time>{new Date(event.createdAt).toLocaleString("en", { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" })} UTC</time></div>)}</div>
       <div className="receipt-proof"><ShieldCheck /><div><small>FROZEN MANIFEST</small><code>{payout.manifestHash}</code></div></div>
       <div className="receipt-links"><a href={payout.manifest.evidenceUrl} target="_blank" rel="noreferrer">Karma evidence <ExternalLink /></a>{payout.transactionLink && <a href={payout.transactionLink} target="_blank" rel="noreferrer">Optimism transaction <ExternalLink /></a>}<a href={`/api/payouts/${payout.id}/receipt`} target="_blank">Machine-readable JSON <ExternalLink /></a></div>
     </section>
-    <p className="receipt-footnote">This receipt binds a Karma milestone approval to one immutable payout instruction and one KeeperHub execution.</p>
+    <p className="receipt-footnote">This receipt binds live Karma evidence to one immutable value-transfer instruction and one KeeperHub execution.</p>
   </div></main>;
 }

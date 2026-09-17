@@ -5,7 +5,7 @@
 - [ ] Public source repository at a tagged, passing commit
 - [ ] Short uncut video showing Karma → KeeperHub → Optimism → receipt
 - [ ] Real Optimism transaction executed by KeeperHub
-- [ ] Public Karma project and milestone link
+- [ ] Public Karma project link showing donations enabled
 - [ ] KeeperHub workflow ID and execution ID
 - [ ] Reachable email and X or Discord handle
 
@@ -15,7 +15,7 @@
 - [ ] Fresh clone works using `.env.example`
 - [ ] CI runs lint, typecheck, tests and production build
 - [ ] No secrets, local databases or private keys are committed
-- [ ] Failure tests cover duplicate, tamper, revoked approval, changed recipient and timeout
+- [ ] Failure tests cover duplicate, tamper, changed recipient and ambiguous execution
 - [ ] Demo records are visibly distinguishable from real transactions
 - [ ] `What remains unfinished` is candid
 

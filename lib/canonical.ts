@@ -25,7 +25,16 @@ export function hashManifest(manifest: PayoutManifest): string {
   return sha256(canonicalJson(manifest));
 }
 
-export function idempotencyKey(manifest: Pick<PayoutManifest, "karmaGrantUID" | "karmaMilestoneUID" | "tranche">): string {
+export function idempotencyKey(manifest: PayoutManifest): string {
+  if (manifest.kind === "project_support") {
+    return sha256([
+      "project-support",
+      manifest.karmaProjectUID.toLowerCase(),
+      manifest.chainId,
+      manifest.tokenAddress.toLowerCase(),
+      manifest.amount
+    ].join(":"));
+  }
   return sha256(`${manifest.karmaGrantUID.toLowerCase()}:${manifest.karmaMilestoneUID.toLowerCase()}:${manifest.tranche}`);
 }
 

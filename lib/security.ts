@@ -47,6 +47,15 @@ export function enforceMutationSecurity(request: NextRequest): void {
   }
 }
 
+export function enforcePublicComposeSecurity(request: NextRequest): void {
+  const config = getConfig();
+  const origin = request.headers.get("origin");
+  if (!config.demo && origin !== config.GRANTRAIL_ALLOWED_ORIGIN) {
+    throw new SecurityError("Public composition is only accepted from the GrantRail application", 403);
+  }
+  enforceRateLimit(request, 3);
+}
+
 function sessionSignature(payload: string, secret: string): string {
   return createHmac("sha256", secret).update(payload).digest("base64url");
 }

@@ -1,14 +1,15 @@
 # GrantRail
 
-**Approved on Karma. Executed exactly by KeeperHub.**
+**Resolved from Karma. Executed exactly by KeeperHub.**
 
-GrantRail connects a real Karma GAP milestone approval to a frozen KeeperHub USDC payout workflow. It gives grant managers one evidence chain from milestone approval to the confirmed Optimism transaction, without asking an agent to reinterpret financial intent when execution begins.
+GrantRail makes KeeperHub the deterministic execution layer for Karma project support. A visitor selects a live Karma project; GrantRail resolves its owner-configured Optimism donation recipient from Karma’s public API, composes and dry-runs an exact USDC workflow through KeeperHub, and records one evidence chain through the confirmed transaction. Milestone payouts remain supported as an operator-only secondary path.
 
 ## What is real
 
-- Karma GAP v2 grant and milestone data is fetched from the official public indexer.
-- Approval status, revocation state, grant relationship and payout recipient are validated.
+- Karma v2 project and chain-specific donation data is fetched from the official public indexer.
+- Project identity and donation recipient are derived server-side and pinned into the manifest; callers cannot supply the destination.
 - KeeperHub authors and executes the ERC-20 workflow in production mode.
+- Anyone can compose and simulate within the public 1 USDC cap; only an authenticated treasury operator can freeze or execute.
 - Every transition is stored in an append-only audit table.
 - Production receipts expose the KeeperHub execution ID and explorer transaction.
 
@@ -26,7 +27,7 @@ npm.cmd run dev
 
 Open `http://localhost:3000`, then select **Run the demo**. The demo persists to `data/grantrail.db`.
 
-The `/demo` route is a public, client-isolated walkthrough that requires no credentials and can never broadcast. The `/dashboard` route remains publicly readable in production, while preparing, freezing and executing real payouts requires an authenticated treasury operator. This separation lets evaluators exercise the product without exposing a shared funded wallet.
+The `/demo` route is a public, client-isolated guided walkthrough that requires no credentials and can never broadcast. The `/dashboard` route performs the real Karma lookup and KeeperHub dry-run for any visitor. Freezing and executing remain operator-only, so evaluators can exercise the integration without gaining control of the shared funded wallet.
 
 ## Production configuration
 
@@ -35,8 +36,8 @@ The `/demo` route is a public, client-isolated walkthrough that requires no cred
 3. Create `.env.local` from `.env.example`.
 4. Set `GRANTRAIL_MODE=production`, a random 32+ character administrator token, and a KeeperHub API key.
 5. Keep `ALLOWED_CHAIN_IDS`, `ALLOWED_TOKEN_ADDRESSES` and `MAX_PAYOUT_USDC` narrow.
-6. Call the prepare route with a real Karma project, grant and milestone.
-7. Review the returned canonical hash, then execute with the administrator bearer token.
+6. Open `/dashboard`, leave the verified `karma` project slug selected, and run the public live simulation.
+7. Authenticate as operator, review the derived recipient and canonical hash, freeze, then execute once.
 
 See [architecture](docs/architecture.md), [security](docs/security.md), [production runbook](docs/production-runbook.md), [demo script](docs/demo-runbook.md), and [submission checklist](docs/submission-checklist.md).
 
@@ -46,12 +47,12 @@ See [architecture](docs/architecture.md), [security](docs/security.md), [product
 | --- | --- | --- |
 | `/api/health` | GET | Readiness and operating mode |
 | `/api/payouts` | GET | Recent manifests and states |
-| `/api/payouts/prepare` | POST | Validate Karma and create/simulate a KeeperHub workflow |
+| `/api/payouts/prepare` | POST | Publicly resolve Karma and create/simulate a capped KeeperHub workflow |
 | `/api/payouts/:id/approve` | POST | Record human review and freeze the exact manifest hash |
 | `/api/payouts/:id/execute` | POST | Revalidate and execute the exact frozen workflow |
 | `/api/payouts/:id/receipt` | GET | Machine-readable evidence bundle |
 
-Production POST routes require `Authorization: Bearer $GRANTRAIL_ADMIN_TOKEN` and an allowed browser origin.
+Public project-support preparation requires the configured browser origin, is rate-limited, derives the recipient server-side, and is capped by `PUBLIC_MAX_SUPPORT_USDC`. Approval and execution require an administrator bearer token or signed operator session.
 
 ## Quality gates
 

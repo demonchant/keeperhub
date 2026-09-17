@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { getConfig } from "@/lib/config";
 import { demoMilestone } from "@/lib/demo";
-import { HEX_ADDRESS, HEX_UID, type KarmaMilestone } from "@/lib/domain";
+import { HEX_ADDRESS, HEX_UID, type KarmaMilestone, type KarmaProjectSupport } from "@/lib/domain";
 import { fetchJson } from "@/lib/http";
 
 const attestationSchema = z.object({
@@ -38,7 +38,33 @@ const grantSchema = z.object({
   }).passthrough().optional()
 }).passthrough();
 
+const projectSupportSchema = z.object({
+  uid: z.string().regex(HEX_UID),
+  chainPayoutAddress: z.record(z.string(), z.string().regex(HEX_ADDRESS)),
+  details: z.object({
+    title: z.string().min(1),
+    slug: z.string().min(2)
+  }).passthrough()
+}).passthrough();
+
 export class KarmaClient {
+  async getProjectSupport(projectSlug: string, chainId: number): Promise<KarmaProjectSupport> {
+    const config = getConfig();
+    const url = `${config.KARMA_API_BASE_URL.replace(/\/$/, "")}/v2/projects/${encodeURIComponent(projectSlug)}`;
+    const project = projectSupportSchema.parse(await fetchJson<unknown>(url, {}, 12_000));
+    if (project.details.slug !== projectSlug) throw new Error("Karma project slug does not match the requested project");
+    const recipient = project.chainPayoutAddress[String(chainId)];
+    if (!recipient) throw new Error(`Karma project has not enabled donations on chain ${chainId}`);
+    return {
+      uid: project.uid,
+      slug: project.details.slug,
+      title: project.details.title,
+      chainId,
+      recipient,
+      evidenceUrl: `https://www.karmahq.xyz/project/${encodeURIComponent(projectSlug)}`
+    };
+  }
+
   async getMilestone(projectSlug: string, grantUID: string, milestoneUID: string): Promise<KarmaMilestone> {
     const config = getConfig();
     if (config.demo) return demoMilestone();

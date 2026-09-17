@@ -12,7 +12,10 @@ describe("KeeperHub workflow", () => {
       network: "10",
       recipientAddress: manifest.recipient,
       amount: "1.00",
-      tokenConfig: { address: manifest.tokenAddress, symbol: "USDC", decimals: 6 }
+      tokenConfig: JSON.stringify({
+        mode: "custom",
+        customToken: { address: manifest.tokenAddress, symbol: "USDC" }
+      })
     });
     expect(workflow.enabled).toBe(false);
   });

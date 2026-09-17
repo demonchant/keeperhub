@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: { default: "GrantRail — Deterministic milestone payouts", template: "%s · GrantRail" },
-  description: "Karma milestone payouts executed exactly through KeeperHub, with one auditable record from approval to transaction.",
+  title: { default: "GrantRail — Deterministic onchain project support", template: "%s · GrantRail" },
+  description: "Karma project support executed exactly through KeeperHub, with one auditable record from live recipient resolution to transaction.",
   metadataBase: new URL("https://grantrail.dev"),
   openGraph: {
     title: "GrantRail",

@@ -5,11 +5,11 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, FileCheck2, Gauge, LockKeyhole, Play, RefreshCw, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/logo";
 
-const phases = ["READY", "COMPOSED", "SIMULATED", "FROZEN", "VERIFIED"] as const;
+const phases = ["READY", "RESOLVED", "SIMULATED", "FROZEN", "VERIFIED"] as const;
 type Phase = typeof phases[number];
 
 const steps = [
-  ["Compose manifest", "Pin grant, milestone, recipient and amount"],
+  ["Resolve Karma project", "Pin project UID, Optimism recipient and amount"],
   ["Dry-run workflow", "Simulate without touching the chain"],
   ["Human review", "Freeze the canonical manifest hash"],
   ["Execute exact workflow", "Produce an isolated demonstration receipt"]
@@ -17,7 +17,7 @@ const steps = [
 
 const actionLabels: Record<Phase, string> = {
   READY: "Compose workflow",
-  COMPOSED: "Run dry simulation",
+  RESOLVED: "Run dry simulation",
   SIMULATED: "Review & freeze",
   FROZEN: "Execute simulation",
   VERIFIED: "Demo complete"
@@ -44,14 +44,14 @@ export function PublicDemo() {
         <div className="demo-heading">
           <p className="eyebrow">PUBLIC INTERACTIVE SANDBOX</p>
           <h1>Run the entire boundary.<br /><span>Risk nothing.</span></h1>
-          <p>This isolated walkthrough uses fixed fixture data. It never calls KeeperHub, signs a transaction or touches a funded wallet.</p>
+          <p>This guided walkthrough uses a frozen snapshot of Karma’s public donation configuration. For a live Karma lookup and real KeeperHub dry-run, use the public console.</p>
         </div>
 
         <div className="demo-safety"><ShieldCheck /><div><b>Zero-funds demonstration</b><span>For evaluators, developers and first-time users. Demonstration hashes and receipts are visibly excluded from submission evidence.</span></div><strong>NO BROADCAST</strong></div>
 
         <div className="demo-grid">
           <section className="demo-card demo-progress">
-            <div className="demo-card-head"><div><small>DETERMINISTIC RUN</small><h2>Approval → receipt</h2></div><span className={`demo-phase phase-${phase.toLowerCase()}`}>{phase}</span></div>
+            <div className="demo-card-head"><div><small>DETERMINISTIC RUN</small><h2>Intent → receipt</h2></div><span className={`demo-phase phase-${phase.toLowerCase()}`}>{phase}</span></div>
             <div className="demo-steps">
               {steps.map(([title, detail], index) => {
                 const complete = phaseIndex > index;
@@ -68,12 +68,12 @@ export function PublicDemo() {
           <section className="demo-card demo-manifest">
             <div className="demo-card-head"><div><small>FIXED INSTRUCTION</small><h2>Canonical manifest</h2></div><FileCheck2 /></div>
             <dl>
-              <div><dt>Karma project</dt><dd>open-climate-commons</dd></div>
-              <div><dt>Milestone</dt><dd>Audited emissions registry</dd></div>
-              <div><dt>Recipient</dt><dd><code>0x6F3a…2a7C</code></dd></div>
+              <div><dt>Karma project</dt><dd>karma</dd></div>
+              <div><dt>Project UID</dt><dd><code>0x86c6…323c</code></dd></div>
+              <div><dt>Recipient</dt><dd><code>0xC987…A09B</code></dd></div>
               <div><dt>Amount</dt><dd>1.00 USDC</dd></div>
               <div><dt>Network</dt><dd>Optimism · 10</dd></div>
-              <div><dt>Tranche</dt><dd>#1</dd></div>
+              <div><dt>Intent</dt><dd>Project support</dd></div>
             </dl>
             <div className={`demo-hash ${phaseIndex >= 3 ? "locked" : ""}`}><LockKeyhole /><div><small>MANIFEST SHA-256</small><code>8ef3c68d91b5…f7a2c2a9</code></div></div>
             {phase === "VERIFIED" && <div className="demo-receipt"><Check /><div><b>Demonstration receipt produced</b><span>Execution ID: exec_demo_8ef3c68d</span><code>0xdemo…not-onchain</code></div></div>}
