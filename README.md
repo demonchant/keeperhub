@@ -4,6 +4,16 @@
 
 GrantRail makes KeeperHub the deterministic execution layer for Karma project support. A visitor selects a live Karma project; GrantRail resolves its owner-configured Optimism donation recipient from Karma’s public API, composes and dry-runs an exact USDC workflow through KeeperHub, and records one evidence chain through the confirmed transaction. Milestone payouts remain supported as an operator-only secondary path.
 
+## Verified Optimism mainnet proof
+
+- Karma project: [Karma](https://www.karmahq.xyz/project/karma)
+- KeeperHub workflow: `0fdlxsr3rpq2s4vpptbfk`
+- KeeperHub execution: `rgn2fnc4do7njpreze1ha`
+- Transfer: `1.00 USDC` to Karma's published Optimism donation recipient
+- Transaction: [`0xe0d641…ac381`](https://optimistic.etherscan.io/tx/0xe0d641331802687902d519f0c93bdd5ffbd2ad4da54537549ea8d9dde9cac381)
+- Canonical manifest: `sha256:101125e53e165750ce935d697e1ecc2a76f202f620ca50230c7584e5d5ac127f`
+- Repository evidence: [`docs/evidence/mainnet-proof.json`](docs/evidence/mainnet-proof.json)
+
 ## What is real
 
 - Karma v2 project and chain-specific donation data is fetched from the official public indexer.

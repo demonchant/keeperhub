@@ -3,11 +3,11 @@
 Replace every placeholder after the verified production run.
 
 - **Source:** `https://github.com/demonchant/keeperhub`
-- **Release:** `https://github.com/demonchant/keeperhub/releases/tag/v1.0.0-demo`
+- **Release:** `https://github.com/demonchant/keeperhub/releases/tag/v1.1.0-submission`
 - **Demo video:** `REPLACE`
 - **KeeperHub workflow:** `0fdlxsr3rpq2s4vpptbfk` (created and simulated from the live Karma project configuration)
-- **KeeperHub execution:** `REPLACE`
-- **Optimism transaction:** `REPLACE`
+- **KeeperHub execution:** `rgn2fnc4do7njpreze1ha`
+- **Optimism transaction:** `https://optimistic.etherscan.io/tx/0xe0d641331802687902d519f0c93bdd5ffbd2ad4da54537549ea8d9dde9cac381`
 - **Karma project:** `https://www.karmahq.xyz/project/karma`
 - **Public GrantRail receipt:** `REPLACE`
 - **Contact email:** `REPLACE`
@@ -24,6 +24,8 @@ KeeperHub MCP/schema conventions and agent-authored workflows, workflow creation
 ## Network
 
 Optimism mainnet for the submitted USDC transfer. Local demo mode is simulated and clearly labeled.
+
+The submitted transfer moved exactly 1 USDC through KeeperHub to the Optimism recipient published by Karma. The execution completed at `2026-09-17T10:55:35.817Z`; its canonical repository evidence is in [`docs/evidence/mainnet-proof.json`](docs/evidence/mainnet-proof.json).
 
 ## What remains unfinished?
 

@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "recordType": "grantrail-mainnet-execution-proof",
+  "status": "VERIFIED",
+  "network": {
+    "name": "Optimism",
+    "chainId": 10
+  },
+  "karma": {
+    "projectSlug": "karma",
+    "projectUID": "0x86c61f601d498bf6081573434452fea50ea40c27ee2d323e1dab89c9317a323c",
+    "evidenceUrl": "https://www.karmahq.xyz/project/karma",
+    "publishedRecipient": "0xC98786D5A7a03C1e74AffCb97fF7eF8a710DA09B"
+  },
+  "manifest": {
+    "kind": "project_support",
+    "hash": "sha256:101125e53e165750ce935d697e1ecc2a76f202f620ca50230c7584e5d5ac127f",
+    "idempotencyKey": "sha256:234eae1ba79487a6519ca13d657d029a1da5ed13624b53b39f83c0fb6e21c294",
+    "token": {
+      "symbol": "USDC",
+      "address": "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85",
+      "decimals": 6
+    },
+    "amount": "1.00",
+    "recipient": "0xC98786D5A7a03C1e74AffCb97fF7eF8a710DA09B"
+  },
+  "keeperHub": {
+    "workflowId": "0fdlxsr3rpq2s4vpptbfk",
+    "executionId": "rgn2fnc4do7njpreze1ha",
+    "triggerNode": {
+      "id": "manual-approval",
+      "type": "trigger",
+      "status": "success"
+    },
+    "transferNode": {
+      "id": "transfer-usdc",
+      "type": "web3/transfer-token",
+      "status": "success",
+      "gasUsedUnits": "45059",
+      "effectiveGasPrice": "100000512",
+      "completedAt": "2026-09-17T10:55:35.817Z"
+    }
+  },
+  "transaction": {
+    "hash": "0xe0d641331802687902d519f0c93bdd5ffbd2ad4da54537549ea8d9dde9cac381",
+    "explorerUrl": "https://optimistic.etherscan.io/tx/0xe0d641331802687902d519f0c93bdd5ffbd2ad4da54537549ea8d9dde9cac381"
+  },
+  "auditTimeline": [
+    "manifest_created",
+    "karma_donation_recipient_validated",
+    "keeperhub_workflow_attached",
+    "workflow_simulated",
+    "operator_approved",
+    "manifest_frozen",
+    "keeperhub_execution_started",
+    "keeperhub_execution_submitted",
+    "transaction_verified"
+  ]
+}

@@ -16,7 +16,7 @@ export default function LandingPage() {
       <nav className="landing-nav wrap">
         <Logo />
         <div className="nav-links">
-          <a href="#how">How it works</a><a href="#security">Security</a><Link href="/docs">Docs</Link><Link href="/demo">Demo</Link>
+          <a href="#how">How it works</a><a href="#security">Security</a><Link href="/proof">Mainnet proof</Link><Link href="/docs">Docs</Link><Link href="/demo">Demo</Link>
         </div>
         <Link className="button button-primary nav-cta" href="/dashboard">Try it now <ArrowRight size={17} /></Link>
       </nav>
@@ -84,7 +84,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="wrap"><Logo /><p>Resolved from Karma. Executed exactly by KeeperHub.</p><div><a href="https://github.com/demonchant/keeperhub" target="_blank" rel="noreferrer">GitHub</a><Link href="/docs">Documentation</Link></div></footer>
+      <footer className="wrap"><Logo /><p>Resolved from Karma. Executed exactly by KeeperHub.</p><div><a href="https://github.com/demonchant/keeperhub" target="_blank" rel="noreferrer">GitHub</a><Link href="/proof">Mainnet proof</Link><Link href="/docs">Documentation</Link></div></footer>
     </main>
   );
 }
