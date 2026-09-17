@@ -2,12 +2,12 @@
 
 ## Required artifacts
 
-- [x] Public source repository at tagged commit `v1.1.0-submission`
+- [x] Public source repository at tagged commit `v1.2.0-submission`
 - [x] [Two-minute video showing Karma → KeeperHub → Optimism → receipt](https://youtu.be/EG6Z2ASVn-0)
 - [x] [Real Optimism transaction executed by KeeperHub](https://optimistic.etherscan.io/tx/0xe0d641331802687902d519f0c93bdd5ffbd2ad4da54537549ea8d9dde9cac381)
 - [x] [Public Karma project link showing donations enabled](https://www.karmahq.xyz/project/karma)
 - [x] KeeperHub workflow `0fdlxsr3rpq2s4vpptbfk` and execution `rgn2fnc4do7njpreze1ha`
-- [ ] Reachable email and X or Discord handle
+- [x] Reachable email and X handle included in `SUBMISSION.md`
 
 ## Judge review
 

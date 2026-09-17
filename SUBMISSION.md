@@ -1,9 +1,9 @@
 # GrantRail submission
 
-Replace every placeholder after the verified production run.
+Final submission package for the verified production integration.
 
 - **Source:** `https://github.com/demonchant/keeperhub`
-- **Release:** `https://github.com/demonchant/keeperhub/releases/tag/v1.1.0-submission`
+- **Release:** `https://github.com/demonchant/keeperhub/releases/tag/v1.2.0-submission`
 - **Demo video:** `https://youtu.be/EG6Z2ASVn-0`
 - **KeeperHub workflow:** `0fdlxsr3rpq2s4vpptbfk` (created and simulated from the live Karma project configuration)
 - **KeeperHub execution:** `rgn2fnc4do7njpreze1ha`
@@ -11,8 +11,8 @@ Replace every placeholder after the verified production run.
 - **Karma project:** `https://www.karmahq.xyz/project/karma`
 - **Public application:** `https://grantrail.onrender.com/`
 - **Public GrantRail receipt:** `https://grantrail.onrender.com/proof`
-- **Contact email:** `REPLACE`
-- **X or Discord:** `REPLACE`
+- **Contact email:** `oladapodamiey@gmail.com`
+- **X:** `@thoyourbaby`
 
 ## Which project did you integrate with, and what does it do?
 
