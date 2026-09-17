@@ -11,6 +11,15 @@ data/*.db
 data/*.db-*
 # Local design reference supplied for this build.
 1.png
+# Local demo recording and video-production artifacts.
+1.mp4
+GrantRail_2min_Final.mp4
+grantrail_final_contact.jpg
+grantrail_voiceover.vtt
+grantrail_voiceover_raw.mp3
+video_contact_sheet.jpg
+video_end_contact.jpg
+video_voiceover.txt
 !.env.example
 !.gitkeep
 .DS_Store

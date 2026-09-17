@@ -4,12 +4,13 @@ Replace every placeholder after the verified production run.
 
 - **Source:** `https://github.com/demonchant/keeperhub`
 - **Release:** `https://github.com/demonchant/keeperhub/releases/tag/v1.1.0-submission`
-- **Demo video:** `REPLACE`
+- **Demo video:** `https://youtu.be/EG6Z2ASVn-0`
 - **KeeperHub workflow:** `0fdlxsr3rpq2s4vpptbfk` (created and simulated from the live Karma project configuration)
 - **KeeperHub execution:** `rgn2fnc4do7njpreze1ha`
 - **Optimism transaction:** `https://optimistic.etherscan.io/tx/0xe0d641331802687902d519f0c93bdd5ffbd2ad4da54537549ea8d9dde9cac381`
 - **Karma project:** `https://www.karmahq.xyz/project/karma`
-- **Public GrantRail receipt:** `REPLACE`
+- **Public application:** `https://grantrail.onrender.com/`
+- **Public GrantRail receipt:** `https://grantrail.onrender.com/proof`
 - **Contact email:** `REPLACE`
 - **X or Discord:** `REPLACE`
 
